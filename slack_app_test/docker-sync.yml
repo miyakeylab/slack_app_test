@@ -1,0 +1,8 @@
+version: '2'
+
+syncs:
+  slack-app-sync:
+    notify_terminal: true
+    # ホスト側(PC)のパスを記載
+    src: './'
+    sync_strategy: 'unison'

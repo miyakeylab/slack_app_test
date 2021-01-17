@@ -1,0 +1,56 @@
+version: '3.5'
+services:
+  web:
+    build: ./docker/web
+    container_name: slack_app_web
+    hostname: slack_app_web
+    ports:
+      - "18090:80"
+    volumes:
+      - ./:/var/www/slack_app_test
+    working_dir: /var/www/slack_app_test
+    privileged: true
+    environment:
+      - NGINX_SERVER_NAME=slack.graspy.jp
+      - NGINX_ROOT=/var/www/slack_app_test/public
+    command: >
+      /bin/bash -c "envsubst '
+      $$NGINX_SERVER_NAME
+      $$NGINX_ROOT
+      '< /etc/nginx/conf.d/conf.template >
+      /etc/nginx/conf.d/default.conf && exec /sbin/init"
+    networks:
+      - slack-app-network
+  db:
+    build: ./docker/db
+    container_name: slack_app_db
+    ports:
+      - 13306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: slack_app_db
+      MYSQL_PASSWORD: slack_app_db
+      MYSQL_DATABASE: slack_app_db
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - slack-app-network
+  s3:
+    image: minio/minio
+    container_name: slack_app_s3
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./docker/minio/data:/data
+    command: server /data
+    environment:
+      MINIO_ACCESS_KEY: local_s3_access_key
+      MINIO_SECRET_KEY: local_s3_secret_key
+    networks:
+      - slack-app-network
+networks:
+  slack-app-network:
+      name: slack-app-network
+volumes:
+  db-data:
+    driver: local
