@@ -15,7 +15,7 @@ class EventController extends Controller
     {
 //        logger(__CLASS__ . __FUNCTION__);
 //        logger($request->all());
-        Log::info(__CLASS__ . __FUNCTION__);
+        Log::error(__CLASS__ . __FUNCTION__);
         return json_encode([]);
     }
 
