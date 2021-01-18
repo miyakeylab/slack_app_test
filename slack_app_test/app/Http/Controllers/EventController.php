@@ -13,9 +13,10 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
-//        logger(__CLASS__ . __FUNCTION__);
+        Log::info(__CLASS__ . __FUNCTION__);
         $req = $request->all();
-        Log::error(__CLASS__ . __FUNCTION__);
+        Log::info($req);
+        
 
         return json_encode([$req['challenge']]);
     }
