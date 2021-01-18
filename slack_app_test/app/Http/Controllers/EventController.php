@@ -16,9 +16,12 @@ class EventController extends Controller
         Log::info(__CLASS__ . __FUNCTION__);
         $req = $request->all();
         Log::info($req);
-        
 
-        return json_encode([$req['challenge']]);
+        if(isset($req['challenge'])) {
+            return json_encode([$req['challenge']]);
+        }else{
+            return;
+        }
     }
 
 }
