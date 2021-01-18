@@ -19,6 +19,7 @@ Route::get('/', function () {
 
 //Route::post('/events','EventController@index');
 Route::post('/events', function (\Illuminate\Http\Request $request) {
+    logger('test');
     logger($request->all());
     return;
 });
