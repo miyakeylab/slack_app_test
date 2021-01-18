@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/events','EventController@index');
+Route::post('/events','App\Http\Controllers\EventController@index');
 //Route::post('/events', function () {
 //    logger('test');
 //});
