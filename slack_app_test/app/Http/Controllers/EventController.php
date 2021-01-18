@@ -12,6 +12,7 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
+        logger(__CLASS__ . __FUNCTION__);
         logger($request->all());
 
         return json_encode([]);
