@@ -16,8 +16,8 @@ class EventController extends Controller
     public function __construct()
     {
         $this->apiKey = config('slack.setting.api_key');
-        $this->teamId = config('slack.setting.team_id');;
-        $this->appId = config('slack.setting.app_id');;
+        $this->teamId = config('slack.setting.team_id');
+        $this->appId = config('slack.setting.app_id');
     }
 
     /**
@@ -39,7 +39,8 @@ class EventController extends Controller
             $app= $request->input('api_app_id');
             if ($token == $this->apiKey &&
                 $team == $this->teamId &&
-                $app == $this->appId) {
+                $app == $this->appId)
+            {
                 $event = $request->input('event');
 
                 if ($type == "event_callback") {
@@ -78,6 +79,9 @@ class EventController extends Controller
                 Log::info($token);
                 Log::info($team);
                 Log::info($app);
+                Log::info($this->apiKey);
+                Log::info($this->teamId);
+                Log::info($this->appId);
 
             }
         }
