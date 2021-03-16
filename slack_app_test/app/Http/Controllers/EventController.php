@@ -28,7 +28,6 @@ class EventController extends Controller
     {
         Log::info(__CLASS__ . __FUNCTION__);
         $req = $request->all();
-        Log::info($req);
         $type = $request->input('type');
 
         if ($type == "url_verification") {
@@ -76,12 +75,6 @@ class EventController extends Controller
             }else{
 
                 Log::info('不正アクセストークン');
-                Log::info($token);
-                Log::info($team);
-                Log::info($app);
-                Log::info($this->apiKey);
-                Log::info($this->teamId);
-                Log::info($this->appId);
 
             }
         }
