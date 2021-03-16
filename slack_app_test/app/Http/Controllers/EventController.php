@@ -34,9 +34,12 @@ class EventController extends Controller
         if ($type == "url_verification") {
             return json_encode([$req['challenge']]);
         } else {
-            if ($req['token'][0] == $this->apiKey &&
-                $req['team_id'][0] == $this->teamId &&
-                $req['api_app_id'][0] == $this->appId) {
+            $token = $request->input('token');
+            $team = $request->input('team_id');
+            $app= $request->input('api_app_id');
+            if ($token == $this->apiKey &&
+                $team == $this->teamId &&
+                $app == $this->appId) {
                 $event = $request->input('event');
 
                 if ($type == "event_callback") {
@@ -72,6 +75,9 @@ class EventController extends Controller
             }else{
 
                 Log::info('不正アクセストークン');
+                Log::info($token);
+                Log::info($team);
+                Log::info($app);
 
             }
         }
