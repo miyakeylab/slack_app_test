@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SlackSendEmojiChange;
+use App\Notifications\SlackNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -25,7 +27,9 @@ class EventController extends Controller
                 if (isset($req['event']['type']) && $req['event']['type'] == "emoji_changed") {
                     if ($req['event']['subtype'] == "add") {
                         $name = $req['event']["name"];
-                        $text = "{$name}の絵文字が追加されました！\n\n :{$name}: ";
+                        $text = "ぼんぬさん！{$name}の絵文字が追加されました！\n\n :{$name}: ";
+                        $sendSlack = new SlackSendEmojiChange();
+                        $sendSlack->notify(new SlackNotification($text));
 
                     } else if ($req['event']['subtype'] == "remove") {
                         $names = $req['event']["names"];
@@ -34,7 +38,9 @@ class EventController extends Controller
                             $icons .= "\n " . $name;
                         }
 
-                        $text = "絵文字がなくなっちゃいました :cry:\n\n {$icons}";
+                        $text = "ぼんぬさん！絵文字がなくなっちゃいました :cry:\n\n {$icons}";
+                        $sendSlack = new SlackSendEmojiChange();
+                        $sendSlack->notify(new SlackNotification($text));
                     }
 
                     Log::info('emoji_change');
