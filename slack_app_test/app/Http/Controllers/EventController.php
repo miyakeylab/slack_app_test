@@ -36,7 +36,7 @@ class EventController extends Controller
             if ($req['token'] == $this->apiKey &&
                 $req['team_id'] == $this->teamId &&
                 $req['api_app_id'] == $this->appId) {
-                
+
                 if (isset($req['type']) && $req['type'] == "event_callback") {
                     Log::info('event_callback');
                     if (isset($req['event']['type']) && $req['event']['type'] == "emoji_changed") {
@@ -56,11 +56,20 @@ class EventController extends Controller
                             $text = "ぼんぬさん！絵文字がなくなっちゃいました :cry:\n\n {$icons}";
                             $sendSlack = new SlackSendEmojiChange();
                             $sendSlack->notify(new SlackNotification($text));
+                        }else{
+                            Log::info('not subtype ' . $req['event']['subtype'] );
+
                         }
 
                         Log::info('emoji_change');
                     }
+                }else{
+
+                    Log::info('not event_callback');
                 }
+            }else{
+
+                Log::info('不正アクセストークン');
             }
         }
     }
