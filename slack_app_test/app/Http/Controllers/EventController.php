@@ -70,6 +70,15 @@ class EventController extends Controller
             }else{
 
                 Log::info('不正アクセストークン');
+
+                Log::info($req['token'] );
+                Log::info($this->apiKey);
+
+                Log::info($req['team_id'] );
+                Log::info($this->teamId);
+
+                Log::info($req['api_app_id'] );
+                Log::info($this->appId);
             }
         }
     }
