@@ -29,25 +29,27 @@ class EventController extends Controller
         Log::info(__CLASS__ . __FUNCTION__);
         $req = $request->all();
         Log::info($req);
+        $type = $request->input('type');
 
-        if (isset($req['challenge'])) {
+        if ($type == "url_verification") {
             return json_encode([$req['challenge']]);
         } else {
-            if ($req['token'] == $this->apiKey &&
-                $req['team_id'] == $this->teamId &&
-                $req['api_app_id'] == $this->appId) {
+            if ($req['token'][0] == $this->apiKey &&
+                $req['team_id'][0] == $this->teamId &&
+                $req['api_app_id'][0] == $this->appId) {
+                $event = $request->input('event');
 
-                if (isset($req['type']) && $req['type'] == "event_callback") {
+                if ($type == "event_callback") {
                     Log::info('event_callback');
-                    if (isset($req['event']['type']) && $req['event']['type'] == "emoji_changed") {
-                        if ($req['event']['subtype'] == "add") {
-                            $name = $req['event']["name"];
+                    if (isset($event['type']) && $event['type'] == "emoji_changed") {
+                        if ($event['subtype'] == "add") {
+                            $name = $event["name"];
                             $text = "ぼんぬさん！{$name}の絵文字が追加されました！\n\n :{$name}: ";
                             $sendSlack = new SlackSendEmojiChange();
                             $sendSlack->notify(new SlackNotification($text));
 
-                        } else if ($req['event']['subtype'] == "remove") {
-                            $names = $req['event']["names"];
+                        } else if ($event['subtype'] == "remove") {
+                            $names = $event["names"];
                             $icons = "";
                             foreach ($names as $name) {
                                 $icons .= "\n " . $name;
@@ -57,7 +59,7 @@ class EventController extends Controller
                             $sendSlack = new SlackSendEmojiChange();
                             $sendSlack->notify(new SlackNotification($text));
                         }else{
-                            Log::info('not subtype ' . $req['event']['subtype'] );
+                            Log::info('not subtype ' . $event['subtype'] );
 
                         }
 
@@ -71,14 +73,6 @@ class EventController extends Controller
 
                 Log::info('不正アクセストークン');
 
-                Log::info($req['token'] );
-                Log::info($this->apiKey);
-
-                Log::info($req['team_id'] );
-                Log::info($this->teamId);
-
-                Log::info($req['api_app_id'] );
-                Log::info($this->appId);
             }
         }
     }
