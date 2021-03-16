@@ -9,6 +9,17 @@ use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
+    protected $apiKey;
+    protected $teamId;
+    protected $appId;
+
+    public function __construct()
+    {
+        $this->apiKey = config('slack.setting.api_key');
+        $this->teamId = config('slack.setting.team_id');;
+        $this->appId = config('slack.setting.app_id');;
+    }
+
     /**
      * @param Request $request
      * @return false|string
@@ -22,31 +33,35 @@ class EventController extends Controller
         if (isset($req['challenge'])) {
             return json_encode([$req['challenge']]);
         } else {
-            if(isset($req['type'])&& $req['type'] == "event_callback") {
-                Log::info('event_callback');
-                if (isset($req['event']['type']) && $req['event']['type'] == "emoji_changed") {
-                    if ($req['event']['subtype'] == "add") {
-                        $name = $req['event']["name"];
-                        $text = "ぼんぬさん！{$name}の絵文字が追加されました！\n\n :{$name}: ";
-                        $sendSlack = new SlackSendEmojiChange();
-                        $sendSlack->notify(new SlackNotification($text));
+            if ($req['token'] == $this->apiKey &&
+                $req['team_id'] == $this->teamId &&
+                $req['api_app_id'] == $this->appId) {
+                
+                if (isset($req['type']) && $req['type'] == "event_callback") {
+                    Log::info('event_callback');
+                    if (isset($req['event']['type']) && $req['event']['type'] == "emoji_changed") {
+                        if ($req['event']['subtype'] == "add") {
+                            $name = $req['event']["name"];
+                            $text = "ぼんぬさん！{$name}の絵文字が追加されました！\n\n :{$name}: ";
+                            $sendSlack = new SlackSendEmojiChange();
+                            $sendSlack->notify(new SlackNotification($text));
 
-                    } else if ($req['event']['subtype'] == "remove") {
-                        $names = $req['event']["names"];
-                        $icons = "";
-                        foreach ($names as $name) {
-                            $icons .= "\n " . $name;
+                        } else if ($req['event']['subtype'] == "remove") {
+                            $names = $req['event']["names"];
+                            $icons = "";
+                            foreach ($names as $name) {
+                                $icons .= "\n " . $name;
+                            }
+
+                            $text = "ぼんぬさん！絵文字がなくなっちゃいました :cry:\n\n {$icons}";
+                            $sendSlack = new SlackSendEmojiChange();
+                            $sendSlack->notify(new SlackNotification($text));
                         }
 
-                        $text = "ぼんぬさん！絵文字がなくなっちゃいました :cry:\n\n {$icons}";
-                        $sendSlack = new SlackSendEmojiChange();
-                        $sendSlack->notify(new SlackNotification($text));
+                        Log::info('emoji_change');
                     }
-
-                    Log::info('emoji_change');
                 }
             }
-            return;
         }
     }
 
