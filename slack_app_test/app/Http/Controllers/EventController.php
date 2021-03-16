@@ -58,7 +58,7 @@ class EventController extends Controller
                                 $icons .= "\n " . $name;
                             }
 
-                            $text = "ぼんぬさん！絵文字がなくなっちゃいました :cry:\n\n {$icons}";
+                            $text = "ぼんぬさん！絵文字がなくなっちゃいました :cry: {$icons}";
                             $sendSlack = new SlackSendEmojiChange();
                             $sendSlack->notify(new SlackNotification($text));
                         }else{
