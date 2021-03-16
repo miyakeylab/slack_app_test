@@ -20,6 +20,10 @@ class EventController extends Controller
         if(isset($req['challenge'])) {
             return json_encode([$req['challenge']]);
         }else{
+            if(isset($req['type']) &&$req['type'] == "emoji_changed")
+            {
+                Log::info('emoji_change');
+            }
             return;
         }
     }
