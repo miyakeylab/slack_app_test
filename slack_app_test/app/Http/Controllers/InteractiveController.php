@@ -33,13 +33,10 @@ class InteractiveController extends Controller
         logger($req);
 
         $payload = $request->input('payload');
-        $type = $request->input('type');
-        $token = $request->input('token');
-        $team = $request->input('team_id');
-        logger($payload);
-        logger($type);
-        logger($token);
-        logger($team);
+        $postData = json_decode($payload, true);
+        $type = $postData['type'];
+        $token = $postData['token'];
+        $team = $postData['team_id'];
 
         if ($token == $this->apiKey &&
             $team == $this->teamId ) {
@@ -49,7 +46,7 @@ class InteractiveController extends Controller
                 $url = 'https://slack.com/api/views.open';
                 $token = $this->accessToken;
                 $view = $this->getModalContent();
-                $trigger_id = $request->input('payload.trigger_id');
+                $trigger_id = $postData['trigger_id'];
 
                 $params = [
                     'view' => json_encode($view),
