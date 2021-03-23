@@ -18,7 +18,6 @@ class InteractiveController extends Controller
     public function __construct()
     {
         $this->apiKey = config('slack.setting.api_key');
-        $this->teamId = config('slack.setting.team_id');
         $this->accessToken = config('slack.setting.access_token');
     }
 
@@ -36,10 +35,8 @@ class InteractiveController extends Controller
         $postData = json_decode($payload, true);
         $type = $postData['type'];
         $token = $postData['token'];
-        $team = $postData['team_id'];
 
-        if ($token == $this->apiKey &&
-            $team == $this->teamId ) {
+        if ($token == $this->apiKey ) {
 
             if ($type == "message_action") {
                 Log::info('message_action');
