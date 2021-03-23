@@ -28,6 +28,8 @@ class EventController extends Controller
     {
         Log::info(__CLASS__ . __FUNCTION__);
         $req = $request->all();
+        Log::info($req);
+
         $type = $request->input('type');
 
         if ($type == "url_verification") {
