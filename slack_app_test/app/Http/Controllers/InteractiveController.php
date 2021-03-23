@@ -41,11 +41,11 @@ class InteractiveController extends Controller
             if ($type == "message_action") {
 
                 Log::info('message_action');
-                $message = $postData['message'];
+                $message = $postData['message']['text'];
                 logger($message);
                 $url = 'https://slack.com/api/views.open';
                 $token = $this->oauthToken;
-                $view = $this->getModalContent();
+                $view = $this->getModalContent($message);
                 $trigger_id = $postData['trigger_id'];
 
                 $params = [
@@ -91,7 +91,7 @@ class InteractiveController extends Controller
      *
      * @return array
      */
-    function getModalContent () {
+    function getModalContent ($message) {
         return [
             "type" => "modal",
             "title" => [
@@ -133,9 +133,10 @@ class InteractiveController extends Controller
                         "type" => "plain_text_input",
                         "action_id" => "wiki_description",
                         "multiline" => true,
+                        "initial_value"=> $message,
                         "placeholder" => [
                             "type" => "plain_text",
-                            "text" => "xxx@gmail.com"
+                            "text" => ""
                         ],
                     ],
                     "label" => [
