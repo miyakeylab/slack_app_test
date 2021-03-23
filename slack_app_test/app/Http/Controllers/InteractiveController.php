@@ -35,6 +35,9 @@ class InteractiveController extends Controller
         $type = $request->input('payload.type');
         $token = $request->input('payload.token');
         $team = $request->input('payload.team_id');
+        logger($type);
+        logger($token);
+        logger($team);
 
         if ($token == $this->apiKey &&
             $team == $this->teamId ) {
