@@ -17,8 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/events','App\Http\Controllers\EventController@index');
-Route::post('/interactive','App\Http\Controllers\InteractiveController@index');
+Route::post('/slack/events','App\Http\Controllers\EventController@index');
+Route::post('/slack/interactive','App\Http\Controllers\InteractiveController@index');
 //Route::post('/events', function () {
 //    logger('test');
 //});
