@@ -121,12 +121,12 @@ class InteractiveController extends Controller
                             "type" => "plain_text",
                             "text" => "タイトル"
                         ],
-                        "optional" => true,
                     ],
                     "label" => [
                         "type" => "plain_text",
                         "text" => "タイトル(任意)"
-                    ]
+                    ],
+                    "optional" => true
                 ],
                 [
                     "type" => "input",
