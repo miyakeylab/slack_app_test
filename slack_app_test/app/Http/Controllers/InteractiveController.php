@@ -36,7 +36,7 @@ class InteractiveController extends Controller
         $type = $postData['type'];
         $token = $postData['token'];
 
-        if ($token == $this->apiKey ) {
+        if ($token == $this->apiKey) {
 
             if ($type == "message_action") {
 
@@ -55,7 +55,7 @@ class InteractiveController extends Controller
 
                 $headers = [
                     'Content-type' => 'application/json',
-                    'Authorization'  =>  'Bearer ' . $token
+                    'Authorization' => 'Bearer ' . $token
                 ];
 
                 $client = new Client();
@@ -71,12 +71,12 @@ class InteractiveController extends Controller
                 $log = json_decode($response->getBody()->getContents(), true);
                 Log::info(print_r($log, true));
 
-                return response('',200);
+                return response('', 200);
 
             } else if ($type == "view_submission") {
                 Log::info('view_submission');
 
-                return response('',200);
+                return response('', 200);
             } else {
                 Log::info('not type: ' . $type);
             }
@@ -91,7 +91,8 @@ class InteractiveController extends Controller
      *
      * @return array
      */
-    function getModalContent ($message) {
+    function getModalContent($message)
+    {
         return [
             "type" => "modal",
             "title" => [
@@ -133,10 +134,10 @@ class InteractiveController extends Controller
                         "type" => "plain_text_input",
                         "action_id" => "wiki_description",
                         "multiline" => true,
-                        "initial_value"=> $message,
+                        "initial_value" => "{$message}",
                         "placeholder" => [
                             "type" => "plain_text",
-                            "text" => ""
+                            "text" => "aaa"
                         ],
                     ],
                     "label" => [
