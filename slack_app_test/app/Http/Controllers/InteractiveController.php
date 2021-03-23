@@ -39,7 +39,10 @@ class InteractiveController extends Controller
         if ($token == $this->apiKey ) {
 
             if ($type == "message_action") {
+
                 Log::info('message_action');
+                $message = $postData['message'];
+                logger($message);
                 $url = 'https://slack.com/api/views.open';
                 $token = $this->oauthToken;
                 $view = $this->getModalContent();
@@ -73,6 +76,7 @@ class InteractiveController extends Controller
             } else if ($type == "view_submission") {
                 Log::info('view_submission');
 
+                return response('',200);
             } else {
                 Log::info('not type: ' . $type);
             }
@@ -92,12 +96,12 @@ class InteractiveController extends Controller
             "type" => "modal",
             "title" => [
                 "type" => "plain_text",
-                "text" => "メンバー登録",
+                "text" => "Hajimari Wikiにメッセージ保存",
                 "emoji" => true
             ],
             "submit" => [
                 "type" => "plain_text",
-                "text" => "登録",
+                "text" => "wiki保存",
                 "emoji" => true
             ],
             "close" => [
@@ -108,26 +112,27 @@ class InteractiveController extends Controller
             "blocks" => [
                 [
                     "type" => "input",
-                    "block_id" => "name",
+                    "block_id" => "title",
                     "element" => [
                         "type" => "plain_text_input",
-                        "action_id" => "氏名",
+                        "action_id" => "wiki_title",
                         "placeholder" => [
                             "type" => "plain_text",
-                            "text" => "田中 太郎"
+                            "text" => "タイトル"
                         ],
                     ],
                     "label" => [
                         "type" => "plain_text",
-                        "text" => "氏名"
+                        "text" => "タイトル(任意)"
                     ]
                 ],
                 [
                     "type" => "input",
-                    "block_id" => "mail",
+                    "block_id" => "description",
                     "element" => [
                         "type" => "plain_text_input",
-                        "action_id" => "メールアドレス",
+                        "action_id" => "wiki_description",
+                        "multiline" => true,
                         "placeholder" => [
                             "type" => "plain_text",
                             "text" => "xxx@gmail.com"
@@ -135,55 +140,7 @@ class InteractiveController extends Controller
                     ],
                     "label" => [
                         "type" => "plain_text",
-                        "text" => "メールアドレス"
-                    ]
-                ],
-                [
-                    "type" => "input",
-                    "block_id" => "language",
-                    "optional" => true,
-                    "element" => [
-                        "type" => "checkboxes",
-                        "action_id" => "得意言語",
-                        "options" => [
-                            [
-                                "text" => [
-                                    "type" => "plain_text",
-                                    "text" => "PHP",
-                                    "emoji" => true
-                                ],
-                                "value" => "value-0"
-                            ],
-                            [
-                                "text" => [
-                                    "type" => "plain_text",
-                                    "text" => "Ruby",
-                                    "emoji" => true
-                                ],
-                                "value" => "value-1"
-                            ],
-                            [
-                                "text" => [
-                                    "type" => "plain_text",
-                                    "text" => "Javascript/Node.js",
-                                    "emoji" => true
-                                ],
-                                "value" => "value-2"
-                            ],
-                            [
-                                "text" => [
-                                    "type" => "plain_text",
-                                    "text" => "Python",
-                                    "emoji" => true
-                                ],
-                                "value" => "value-3"
-                            ]
-                        ]
-                    ],
-                    "label" => [
-                        "type" => "plain_text",
-                        "text" => "得意言語",
-                        "emoji" => true
+                        "text" => "本文"
                     ]
                 ]
             ]
