@@ -113,6 +113,7 @@ class InteractiveController extends Controller
             "blocks" => [
                 [
                     "type" => "input",
+                    "block_id" => "title",
                     "element" => [
                         "type" => "plain_text_input",
                         "action_id" => "wiki_title",
@@ -120,6 +121,7 @@ class InteractiveController extends Controller
                             "type" => "plain_text",
                             "text" => "タイトル"
                         ],
+                        "optional" => true,
                     ],
                     "label" => [
                         "type" => "plain_text",
