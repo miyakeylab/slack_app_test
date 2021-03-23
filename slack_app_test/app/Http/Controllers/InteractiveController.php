@@ -32,9 +32,11 @@ class InteractiveController extends Controller
         $req = $request->all();
         logger($req);
 
-        $type = $request->input('payload.type');
-        $token = $request->input('payload.token');
-        $team = $request->input('payload.team_id');
+        $payload = $request->input('payload');
+        $type = $request->input('type');
+        $token = $request->input('token');
+        $team = $request->input('team_id');
+        logger($payload);
         logger($type);
         logger($token);
         logger($team);
