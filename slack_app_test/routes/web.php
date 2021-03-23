@@ -18,6 +18,7 @@ Route::get('/', function () {
 });
 
 Route::post('/events','App\Http\Controllers\EventController@index');
+Route::post('/Interactive','App\Http\Controllers\InteractiveController@index');
 //Route::post('/events', function () {
 //    logger('test');
 //});
