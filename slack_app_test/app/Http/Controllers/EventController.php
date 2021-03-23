@@ -28,7 +28,7 @@ class EventController extends Controller
     {
         Log::info(__CLASS__ . __FUNCTION__);
         $req = $request->all();
-        Log::info($req);
+        logger($req);
 
         $type = $request->input('type');
 
