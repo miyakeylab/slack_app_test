@@ -19,7 +19,6 @@ class InteractiveController extends Controller
     {
         $this->apiKey = config('slack.setting.api_key');
         $this->teamId = config('slack.setting.team_id');
-        $this->appId = config('slack.setting.app_id');
         $this->accessToken = config('slack.setting.access_token');
     }
 
@@ -33,21 +32,19 @@ class InteractiveController extends Controller
         $req = $request->all();
         logger($req);
 
-        $type = $request->input('type');
-        $token = $request->input('token');
-        $team = $request->input('team_id');
-        $app = $request->input('api_app_id');
+        $type = $request->input('payload.type');
+        $token = $request->input('payload.token');
+        $team = $request->input('payload.team_id');
 
         if ($token == $this->apiKey &&
-            $team == $this->teamId &&
-            $app == $this->appId) {
+            $team == $this->teamId ) {
 
             if ($type == "message_action") {
                 Log::info('message_action');
                 $url = 'https://slack.com/api/views.open';
                 $token = $this->accessToken;
                 $view = $this->getModalContent();
-                $trigger_id = $request->input('trigger_id');
+                $trigger_id = $request->input('payload.trigger_id');
 
                 $params = [
                     'view' => json_encode($view),
