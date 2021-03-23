@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SlackSendEmojiChange;
 use App\Notifications\SlackNotification;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -12,12 +13,14 @@ class InteractiveController extends Controller
     protected $apiKey;
     protected $teamId;
     protected $appId;
+    protected $accessToken;
 
     public function __construct()
     {
         $this->apiKey = config('slack.setting.api_key');
         $this->teamId = config('slack.setting.team_id');
         $this->appId = config('slack.setting.app_id');
+        $this->accessToken = config('slack.setting.access_token');
     }
 
     /**
@@ -31,55 +34,164 @@ class InteractiveController extends Controller
         logger($req);
 
         $type = $request->input('type');
+        $token = $request->input('token');
+        $team = $request->input('team_id');
+        $app = $request->input('api_app_id');
 
-        if ($type == "url_verification") {
-            return json_encode([$req['challenge']]);
-        } else {
-            $token = $request->input('token');
-            $team = $request->input('team_id');
-            $app= $request->input('api_app_id');
-            if ($token == $this->apiKey &&
-                $team == $this->teamId &&
-                $app == $this->appId)
-            {
-                $event = $request->input('event');
+        if ($token == $this->apiKey &&
+            $team == $this->teamId &&
+            $app == $this->appId) {
 
-                if ($type == "event_callback") {
-                    Log::info('event_callback');
-                    if (isset($event['type']) && $event['type'] == "emoji_changed") {
-                        if ($event['subtype'] == "add") {
-                            $name = $event["name"];
-                            $text = "ぼんぬさん！{$name}の絵文字が追加されました！\n\n :{$name}: ";
-                            $sendSlack = new SlackSendEmojiChange();
-                            $sendSlack->notify(new SlackNotification($text));
+            if ($type == "message_action") {
+                Log::info('message_action');
+                $url = 'https://slack.com/api/views.open';
+                $token = $this->accessToken;
+                $view = $this->getModalContent();
+                $trigger_id = $request->input('trigger_id');
 
-                        } else if ($event['subtype'] == "remove") {
-                            $names = $event["names"];
-                            $icons = "";
-                            foreach ($names as $name) {
-                                $icons .= "\n " . $name;
-                            }
+                $params = [
+                    'view' => json_encode($view),
+                    'trigger_id' => $trigger_id
+                ];
 
-                            $text = "ぼんぬさん！絵文字がなくなっちゃいました :cry: {$icons}";
-                            $sendSlack = new SlackSendEmojiChange();
-                            $sendSlack->notify(new SlackNotification($text));
-                        }else{
-                            Log::info('not subtype ' . $event['subtype'] );
+                $headers = [
+                    'Content-type' => 'application/json',
+                    'Authorization'  =>  'Bearer ' . $token
+                ];
 
-                        }
+                $client = new Client();
+                $response = $client->request(
+                    'POST',
+                    $url, // URLを設定
+                    [
+                        'headers' => $headers,
+                        'json' => $params
+                    ] // パラメーターがあれば設定
+                );
 
-                        Log::info('emoji_change');
-                    }
-                }else{
+                $log = json_decode($response->getBody()->getContents(), true);
+                Log::info(print_r($log, true));
 
-                    Log::info('not event_callback');
-                }
-            }else{
+                return response('',200);
 
-                Log::info('不正アクセストークン');
+            } else if ($type == "view_submission") {
+                Log::info('view_submission');
 
+            } else {
+                Log::info('not type: ' . $type);
             }
+        } else {
+            Log::info('不正アクセストークン');
+
         }
+    }
+
+    /**
+     * ダイアログのテンプレートを作る
+     *
+     * @return array
+     */
+    function getModalContent () {
+        return [
+            "type" => "modal",
+            "title" => [
+                "type" => "plain_text",
+                "text" => "メンバー登録",
+                "emoji" => true
+            ],
+            "submit" => [
+                "type" => "plain_text",
+                "text" => "登録",
+                "emoji" => true
+            ],
+            "close" => [
+                "type" => "plain_text",
+                "text" => "キャンセル",
+                "emoji" => true
+            ],
+            "blocks" => [
+                [
+                    "type" => "input",
+                    "block_id" => "name",
+                    "element" => [
+                        "type" => "plain_text_input",
+                        "action_id" => "氏名",
+                        "placeholder" => [
+                            "type" => "plain_text",
+                            "text" => "田中 太郎"
+                        ],
+                    ],
+                    "label" => [
+                        "type" => "plain_text",
+                        "text" => "氏名"
+                    ]
+                ],
+                [
+                    "type" => "input",
+                    "block_id" => "mail",
+                    "element" => [
+                        "type" => "plain_text_input",
+                        "action_id" => "メールアドレス",
+                        "placeholder" => [
+                            "type" => "plain_text",
+                            "text" => "xxx@gmail.com"
+                        ],
+                    ],
+                    "label" => [
+                        "type" => "plain_text",
+                        "text" => "メールアドレス"
+                    ]
+                ],
+                [
+                    "type" => "input",
+                    "block_id" => "language",
+                    "optional" => true,
+                    "element" => [
+                        "type" => "checkboxes",
+                        "action_id" => "得意言語",
+                        "options" => [
+                            [
+                                "text" => [
+                                    "type" => "plain_text",
+                                    "text" => "PHP",
+                                    "emoji" => true
+                                ],
+                                "value" => "value-0"
+                            ],
+                            [
+                                "text" => [
+                                    "type" => "plain_text",
+                                    "text" => "Ruby",
+                                    "emoji" => true
+                                ],
+                                "value" => "value-1"
+                            ],
+                            [
+                                "text" => [
+                                    "type" => "plain_text",
+                                    "text" => "Javascript/Node.js",
+                                    "emoji" => true
+                                ],
+                                "value" => "value-2"
+                            ],
+                            [
+                                "text" => [
+                                    "type" => "plain_text",
+                                    "text" => "Python",
+                                    "emoji" => true
+                                ],
+                                "value" => "value-3"
+                            ]
+                        ]
+                    ],
+                    "label" => [
+                        "type" => "plain_text",
+                        "text" => "得意言語",
+                        "emoji" => true
+                    ]
+                ]
+            ]
+        ];
     }
 
 }
