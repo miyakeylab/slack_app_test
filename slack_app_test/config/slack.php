@@ -7,5 +7,6 @@ return [
         'team_id' => env('SLACK_TEAM_ID'),
         'app_id' => env('SLACK_API_APP_ID'),
         'access_token' => env('SLACK_ACCESS_TOKEN'),
+        'oauth_token' => env('SLACK_OAUTH_TOKEN'),
     ],
 ];

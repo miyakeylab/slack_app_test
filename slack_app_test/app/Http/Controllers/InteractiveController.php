@@ -13,12 +13,12 @@ class InteractiveController extends Controller
     protected $apiKey;
     protected $teamId;
     protected $appId;
-    protected $accessToken;
+    protected $oauthToken;
 
     public function __construct()
     {
         $this->apiKey = config('slack.setting.api_key');
-        $this->accessToken = config('slack.setting.access_token');
+        $this->oauthToken = config('slack.setting.oauth_token');
     }
 
     /**
@@ -41,7 +41,7 @@ class InteractiveController extends Controller
             if ($type == "message_action") {
                 Log::info('message_action');
                 $url = 'https://slack.com/api/views.open';
-                $token = $this->accessToken;
+                $token = $this->oauthToken;
                 $view = $this->getModalContent();
                 $trigger_id = $postData['trigger_id'];
 
