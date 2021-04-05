@@ -71,7 +71,11 @@ class EventController extends Controller
                         }
 
                         Log::info('emoji_change');
+                    }else if(isset($event['type']) && $event['type'] == "reaction_added") {
+                        Log::info('reaction_added');
+                        Log::info($event);
                     }
+
                 }else{
 
                     Log::info('not event_callback');
