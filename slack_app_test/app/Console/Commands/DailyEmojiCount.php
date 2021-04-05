@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Console\Commands;
 
 use App\Models\EmojiReactionHistory;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -31,7 +33,7 @@ class DailyEmojiCount extends Command
             ->orderByDesc('cnt')
             ->get();
 
-       logger($emoji);
+        logger($emoji);
 
     }
 }
