@@ -49,9 +49,11 @@ class EventController extends Controller
                     if (isset($event['type']) && $event['type'] == "emoji_changed") {
                         if ($event['subtype'] == "add") {
                             $name = $event["name"];
-                            $text = "ぼんぬさん！{$name}の絵文字が追加されました！\n\n :{$name}: ";
+                            $text = "ぼんぬさん！{$name}の絵文字が追加されました！";
+                            $text2 = ":{$name}:";
                             $sendSlack = new SlackSendEmojiChange();
                             $sendSlack->notify(new SlackNotification($text));
+                            $sendSlack->notify(new SlackNotification($text2));
 
                         } else if ($event['subtype'] == "remove") {
                             $names = $event["names"];
