@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\EmojiReactionHistory;
+use App\Models\SlackSendEmojiChange;
+use App\Notifications\SlackNotification;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -33,13 +35,13 @@ class DailyEmojiCount extends Command
             ->orderByDesc('cnt')
             ->get();
         $no = 1;
-        $text = "今日の絵文字ランキング\n";
+        $text = " *今日の絵文字ランキング* \n";
         foreach ($emoji as $e)
         {
             if($no > 10){
                 break;
             }
-            $text .= "第{$no}位 {$e['cnt']}回 :{$e['emoji']}: \n";
+            $text .= "第{$no}位 {$e['cnt']}回　　:{$e['emoji']}: \n";
 
 
             $no++;
@@ -47,5 +49,7 @@ class DailyEmojiCount extends Command
 
         logger($text);
 
+        $sendSlack = new SlackSendEmojiChange();
+        $sendSlack->notify(new SlackNotification($text));
     }
 }
