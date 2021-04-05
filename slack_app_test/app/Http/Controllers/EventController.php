@@ -38,11 +38,10 @@ class EventController extends Controller
         } else {
             $token = $request->input('token');
             $team = $request->input('team_id');
-            $app= $request->input('api_app_id');
+            $app = $request->input('api_app_id');
             if ($token == $this->apiKey &&
                 $team == $this->teamId &&
-                $app == $this->appId)
-            {
+                $app == $this->appId) {
                 $event = $request->input('event');
 
                 if ($type == "event_callback") {
@@ -66,24 +65,25 @@ class EventController extends Controller
                             $text = "ぼんぬさん！絵文字がなくなっちゃいました :cry: {$icons}";
                             $sendSlack = new SlackSendEmojiChange();
                             $sendSlack->notify(new SlackNotification($text));
-                        }else{
-                            Log::info('not subtype ' . $event['subtype'] );
+                        } else {
+                            Log::info('not subtype ' . $event['subtype']);
 
                         }
 
                         Log::info('emoji_change');
-                    }else if(isset($event['type']) && $event['type'] == "reaction_added") {
+                    } else if (isset($event['type']) && $event['type'] == "reaction_added") {
                         Log::info('reaction_added');
 
                         $emoji = array(
-                            'source_user_id'=>$event['user'],
-                            'destination_user_id'=>$event['item_user'],
+                            'source_user_id' => $event['user'],
                             'emoji' => $event['reaction']);
 
+                        if (isset($item['item_user'])) {
+                            $emoji['destination_user_id'] = $event['item_user'];
+                        }
                         $item = $event['item'];
 
-                        if($item['type'] == "message" && isset($item['channel']))
-                        {
+                        if ($item['type'] == "message" && isset($item['channel'])) {
                             $emoji['channel_id'] = $item['channel'];
                         }
 
@@ -92,11 +92,11 @@ class EventController extends Controller
                         Log::info($event);
                     }
 
-                }else{
+                } else {
 
                     Log::info('not event_callback');
                 }
-            }else{
+            } else {
 
                 Log::info('不正アクセストークン');
 
