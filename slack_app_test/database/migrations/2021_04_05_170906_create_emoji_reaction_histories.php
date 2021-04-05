@@ -15,9 +15,9 @@ class CreateEmojiReactionHistories extends Migration
     {
         Schema::create('emoji_reaction_histories', function (Blueprint $table) {
             $table->increments('id')->comment('id');
-            $table->unsignedInteger('source_user_id')->comment('絵文字送ったユーザーid');
-            $table->unsignedInteger('destination_user_id')->comment('絵文字受けたユーザーid');
-            $table->unsignedInteger('channel_id')->nullable()->comment('channel id');
+            $table->char('source_user_id',255)->comment('絵文字送ったユーザーid');
+            $table->char('destination_user_id',255)->nullable()->comment('絵文字受けたユーザーid');
+            $table->char('channel_id',255)->nullable()->comment('channel id');
             $table->char('emoji',255)->comment('絵文字');
 
             $table->timestamps();
