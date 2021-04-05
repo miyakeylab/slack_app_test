@@ -32,8 +32,20 @@ class DailyEmojiCount extends Command
             ->groupBy('emoji')
             ->orderByDesc('cnt')
             ->get();
+        $no = 1;
+        $text = "今日の絵文字ランキング\n";
+        foreach ($emoji as $e)
+        {
+            if($no > 10){
+                break;
+            }
+            $text .= "第{$no}位 {$e['cnt']}回 :{$e['emoji']}: \n";
 
-        logger($emoji);
+
+            $no++;
+        }
+
+        logger($text);
 
     }
 }
