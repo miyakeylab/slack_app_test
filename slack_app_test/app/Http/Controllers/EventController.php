@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmojiReactionHistory;
 use App\Models\SlackSendEmojiChange;
 use App\Notifications\SlackNotification;
 use Illuminate\Http\Request;
@@ -73,6 +74,21 @@ class EventController extends Controller
                         Log::info('emoji_change');
                     }else if(isset($event['type']) && $event['type'] == "reaction_added") {
                         Log::info('reaction_added');
+
+                        $emoji = array(
+                            'source_user_id'=>$event['user'],
+                            'destination_user_id'=>$event['item_user'],
+                            'emoji' => $event['reaction']);
+
+                        $item = $event['item'];
+
+                        if($item['type'] == "message" && isset($item['channel']))
+                        {
+                            $emoji['channel_id'] = $item['channel'];
+                        }
+
+                        // 保存
+                        EmojiReactionHistory::create($emoji);
                         Log::info($event);
                     }
 
