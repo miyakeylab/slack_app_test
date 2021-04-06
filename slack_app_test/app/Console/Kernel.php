@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\DailyEmojiCount::class,
+        Commands\DailyEmojiUserCount::class,
         //
     ];
 
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('DailyEmojiCount')->dailyAt('10:00');
+        $schedule->command('DailyEmojiUserCount')->dailyAt('10:00');
     }
 
     /**
