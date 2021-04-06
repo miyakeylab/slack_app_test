@@ -27,18 +27,26 @@ class DailyEmojiCount extends Command
     public function handle()
     {
 
-        $now = Carbon::now();
-        $start = $now->startofday();
+        $start = Carbon::now()->subDay()->startofday();
+        $end = Carbon::now()->startOfDay();
+
         $emoji = EmojiReactionHistory::select(DB::raw('count(id) as cnt, emoji'))
             ->where('created_at', '>=', $start)
+            ->where('created_at', '<', $end)
             ->groupBy('emoji')
             ->orderByDesc('cnt')
             ->get();
+        $emojiCount = EmojiReactionHistory::select(DB::raw('count(id) as cnt, emoji'))
+            ->where('created_at', '>=', $start)
+            ->where('created_at', '<', $end)
+            ->count();
         $no = 1;
-        $text = " *今日の絵文字ランキング* \n";
+        $text = " *昨日のスタンプランキング* \n";
+        $text .= " ({$start->format('Y/m/d h:i')}〜{$end->format('Y/m/d h:i')}) \n";
+        $text .= " (総スタンプ数{$emojiCount}回 \n";
         foreach ($emoji as $e)
         {
-            if($no > 10){
+            if($no > 20){
                 break;
             }
             $text .= "第{$no}位 {$e['cnt']}回　　:{$e['emoji']}: \n";
