@@ -42,8 +42,8 @@ class DailyEmojiCount extends Command
             ->count();
         $no = 1;
         $text = " *昨日のスタンプランキング* \n";
-        $text .= " ({$start->format('Y/m/d h:i')}〜{$end->format('Y/m/d h:i')}) \n";
-        $text .= " (総スタンプ数{$emojiCount}回 \n";
+        $text .= " ({$start->format('Y/m/d H:i')}〜{$end->format('Y/m/d H:i')}) \n";
+        $text .= " 総スタンプ数{$emojiCount}回 \n";
         foreach ($emoji as $e)
         {
             if($no > 20){
