@@ -38,21 +38,30 @@ class DailyEmojiUserCount extends Command
             ->get();
 
         $no = 1;
+        $cnt = 1;
+        $preCnt = 0;
         $text = " *昨日のスタンパーランキング* \n";
         $text .= " ({$start->format('Y/m/d H:i')}〜{$end->format('Y/m/d H:i')}) \n";
         foreach ($emoji as $e)
         {
-            if($no > 10){
+            if($cnt > 10){
                 break;
             }
-            
+
+            // 同率では無い場合で前回値がマイナスで無い場合はNoはカウント数と同じ
+            if($preCnt != $e['cnt'] )
+            {
+                $no = $cnt;
+            }
+
             if($no == 1){
                 $text .= "第{$no}位 {$e['cnt']}回 :tada: <@{$e['source_user_id']}> :tada: \n";
 
             }else {
                 $text .= "第{$no}位 {$e['cnt']}回　<@{$e['source_user_id']}> \n";
             }
-            $no++;
+            $preCnt = $e['cnt'];
+            $cnt++;
         }
 
         logger($text);
