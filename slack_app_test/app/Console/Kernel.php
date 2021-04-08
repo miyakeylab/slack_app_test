@@ -27,8 +27,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('DailyEmojiCount')->dailyAt('10:00');
-        $schedule->command('DailyEmojiUserCount')->dailyAt('10:00');
+        $schedule->command('DailyEmojiCount')->dailyAt('09:00');
+        $schedule->command('DailyEmojiUserCount')->dailyAt('09:00');
     }
 
     /**

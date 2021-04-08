@@ -41,7 +41,6 @@ class DailyEmojiCount extends Command
             ->where('created_at', '<', $end)
             ->count();
 
-
         $no = 1;
         $cnt = 1;
         $preCnt = 0;
@@ -70,5 +69,20 @@ class DailyEmojiCount extends Command
 
         $sendSlack = new SlackSendEmojiChange();
         $sendSlack->notify(new SlackNotification($text));
+
+        $pickUp = EmojiReactionHistory::select(DB::raw('count(id) as cnt, emoji'))
+            ->where('created_at', '>=', $start)
+            ->where('created_at', '<', $end)
+            ->where('cnt', '=', 1)
+            ->groupBy('emoji')
+            ->inRandomOrder()
+            ->first();
+
+        if(!empty($pickUp))
+        {
+            $pick = " *本日のピックアップスタンプ* (昨日一回だけ使われたスタンプからランダムにピックアップ)\n";
+            $pick .= ":{$pickUp->emoji}: \n";
+            $sendSlack->notify(new SlackNotification($pick));
+        }
     }
 }
