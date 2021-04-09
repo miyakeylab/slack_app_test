@@ -29,6 +29,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('DailyEmojiCount')->dailyAt('09:00');
         $schedule->command('DailyEmojiUserCount')->dailyAt('09:00');
+        $schedule->command('WeeklyEmojiCount')->weeklyOn(1, '8:00');
+        $schedule->command('WeeklyEmojiUserCount')->weeklyOn(1, '8:00');
     }
 
     /**

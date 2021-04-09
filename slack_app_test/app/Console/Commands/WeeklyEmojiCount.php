@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Log;
  * 日々の利用絵文字数を計測
  *
  */
-class DailyEmojiCount extends Command
+class WeeklyEmojiCount extends Command
 {
-    protected $signature = 'DailyEmojiCount';
-    protected $description = '日々の利用絵文字数を計測';
+    protected $signature = 'WeeklyEmojiCount';
+    protected $description = '週の利用絵文字数を計測';
 
     public function __construct()
     {
@@ -27,7 +27,7 @@ class DailyEmojiCount extends Command
     public function handle()
     {
 
-        $start = Carbon::now()->subDay()->startofday();
+        $start = Carbon::now()->subDay(7)->startofday();
         $end = Carbon::now()->startOfDay();
 
         $emoji = EmojiReactionHistory::select(DB::raw('count(id) as cnt, emoji'))
@@ -44,7 +44,7 @@ class DailyEmojiCount extends Command
         $no = 1;
         $cnt = 1;
         $preCnt = 0;
-        $text = " *昨日のスタンプランキング* \n";
+        $text = " *週間スタンプランキング* \n";
         $text .= " ({$start->format('Y/m/d H:i')}〜{$end->format('Y/m/d H:i')}) \n";
         $text .= " 総スタンプ数{$emojiCount}回 \n";
         foreach ($emoji as $e)
@@ -65,18 +65,5 @@ class DailyEmojiCount extends Command
             $cnt++;
         }
 
-        logger($text);
-
-        $sendSlack = new SlackSendEmojiChange();
-        $sendSlack->notify(new SlackNotification($text));
-
-        $pickUp = $emoji->where('cnt','=',1)->random();
-
-        if(!empty($pickUp))
-        {
-            $pick = " *本日のピックアップスタンプ* (昨日一回だけ使われたスタンプからランダムにピックアップ)\n";
-            $pick .= ":{$pickUp->emoji}: \n";
-            $sendSlack->notify(new SlackNotification($pick));
-        }
     }
 }

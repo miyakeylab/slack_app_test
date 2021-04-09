@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Log;
  * 日々の利用絵文字数を計測
  *
  */
-class DailyEmojiCount extends Command
+class WeeklyEmojiUserCount extends Command
 {
-    protected $signature = 'DailyEmojiCount';
-    protected $description = '日々の利用絵文字数を計測';
+    protected $signature = 'WeeklyEmojiUserCount';
+    protected $description = '週の利用絵文字数ユーザー数を計測';
 
     public function __construct()
     {
@@ -27,29 +27,24 @@ class DailyEmojiCount extends Command
     public function handle()
     {
 
-        $start = Carbon::now()->subDay()->startofday();
+        $start = Carbon::now()->subDay(7)->startofday();
         $end = Carbon::now()->startOfDay();
 
-        $emoji = EmojiReactionHistory::select(DB::raw('count(id) as cnt, emoji'))
+        $emoji = EmojiReactionHistory::select(DB::raw('count(id) as cnt, source_user_id'))
             ->where('created_at', '>=', $start)
             ->where('created_at', '<', $end)
-            ->groupBy('emoji')
+            ->groupBy('source_user_id')
             ->orderByDesc('cnt')
             ->get();
-        $emojiCount = EmojiReactionHistory::select(DB::raw('count(id) as cnt, emoji'))
-            ->where('created_at', '>=', $start)
-            ->where('created_at', '<', $end)
-            ->count();
 
         $no = 1;
         $cnt = 1;
         $preCnt = 0;
-        $text = " *昨日のスタンプランキング* \n";
+        $text = " *先週のスタンパーランキング* \n";
         $text .= " ({$start->format('Y/m/d H:i')}〜{$end->format('Y/m/d H:i')}) \n";
-        $text .= " 総スタンプ数{$emojiCount}回 \n";
         foreach ($emoji as $e)
         {
-            if($cnt > 20){
+            if($cnt > 10){
                 break;
             }
 
@@ -59,8 +54,12 @@ class DailyEmojiCount extends Command
                 $no = $cnt;
             }
 
-            $text .= "第{$no}位 {$e['cnt']}回　　:{$e['emoji']}: \n";
+            if($no == 1){
+                $text .= "第{$no}位 {$e['cnt']}回 :tada: <@{$e['source_user_id']}> :tada: \n";
 
+            }else {
+                $text .= "第{$no}位 {$e['cnt']}回　<@{$e['source_user_id']}> \n";
+            }
             $preCnt = $e['cnt'];
             $cnt++;
         }
@@ -69,14 +68,5 @@ class DailyEmojiCount extends Command
 
         $sendSlack = new SlackSendEmojiChange();
         $sendSlack->notify(new SlackNotification($text));
-
-        $pickUp = $emoji->where('cnt','=',1)->random();
-
-        if(!empty($pickUp))
-        {
-            $pick = " *本日のピックアップスタンプ* (昨日一回だけ使われたスタンプからランダムにピックアップ)\n";
-            $pick .= ":{$pickUp->emoji}: \n";
-            $sendSlack->notify(new SlackNotification($pick));
-        }
     }
 }
