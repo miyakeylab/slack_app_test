@@ -15,6 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\DailyEmojiCount::class,
         Commands\DailyEmojiUserCount::class,
+        Commands\WeeklyEmojiCount::class,
+        Commands\WeeklyEmojiUserCount::class,
         //
     ];
 

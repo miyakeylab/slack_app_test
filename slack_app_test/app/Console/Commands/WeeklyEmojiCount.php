@@ -65,5 +65,7 @@ class WeeklyEmojiCount extends Command
             $cnt++;
         }
 
+        $sendSlack = new SlackSendEmojiChange();
+        $sendSlack->notify(new SlackNotification($text));
     }
 }
