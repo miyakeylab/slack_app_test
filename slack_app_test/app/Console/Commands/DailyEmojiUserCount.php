@@ -54,12 +54,27 @@ class DailyEmojiUserCount extends Command
                 $no = $cnt;
             }
 
+            $usersData = EmojiReactionHistory::select(DB::raw('count(id) as cnt, emoji'))
+                ->where('created_at', '>=', $start)
+                ->where('created_at', '<', $end)
+                ->where('source_user_id', '=',$e['source_user_id'])
+                ->groupBy('emoji')
+                ->orderByDesc('cnt')
+                ->get();
+            $moji = "";
+            foreach ($usersData as $data)
+            {
+                $moji = $data['emoji'];
+            }
+
             if($no == 1){
-                $text .= "第{$no}位 {$e['cnt']}回 :tada: <@{$e['source_user_id']}> :tada: \n";
+                $text .= "第{$no}位 {$e['cnt']}回 :tada: <@{$e['source_user_id']}> :tada: :{$moji}: \n";
 
             }else {
-                $text .= "第{$no}位 {$e['cnt']}回　<@{$e['source_user_id']}> \n";
+                $text .= "第{$no}位 {$e['cnt']}回　<@{$e['source_user_id']}> :{$moji}: \n";
             }
+
+
             $preCnt = $e['cnt'];
             $cnt++;
         }
