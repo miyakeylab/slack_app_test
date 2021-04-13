@@ -65,6 +65,7 @@ class DailyEmojiUserCount extends Command
             foreach ($usersData as $data)
             {
                 $moji = $data['emoji'];
+                break;
             }
 
             if($no == 1){
