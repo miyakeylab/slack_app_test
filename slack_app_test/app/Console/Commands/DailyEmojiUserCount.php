@@ -54,6 +54,7 @@ class DailyEmojiUserCount extends Command
                 $no = $cnt;
             }
 
+            // ユーザー単位
             $usersData = EmojiReactionHistory::select(DB::raw('count(id) as cnt, emoji'))
                 ->where('created_at', '>=', $start)
                 ->where('created_at', '<', $end)
@@ -62,10 +63,10 @@ class DailyEmojiUserCount extends Command
                 ->orderByDesc('cnt')
                 ->get();
             $moji = "";
-            foreach ($usersData as $data)
+            $pickUp = $usersData->random();
+            if(!empty($pickUp))
             {
-                $moji = $data['emoji'];
-                break;
+                $moji = $pickUp->emoji;
             }
 
             if($no == 1){
