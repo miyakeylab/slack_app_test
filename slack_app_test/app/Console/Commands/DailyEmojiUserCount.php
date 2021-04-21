@@ -44,7 +44,7 @@ class DailyEmojiUserCount extends Command
         $text .= " ({$start->format('Y/m/d H:i')}〜{$end->format('Y/m/d H:i')}) \n";
         foreach ($emoji as $e)
         {
-            if($cnt > 10){
+            if($cnt > 15){
                 break;
             }
 

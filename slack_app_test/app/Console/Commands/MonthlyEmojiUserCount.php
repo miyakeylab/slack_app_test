@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Log;
  * 日々の利用絵文字数を計測
  *
  */
-class WeeklyEmojiUserCount extends Command
+class MonthlyEmojiUserCount extends Command
 {
-    protected $signature = 'WeeklyEmojiUserCount';
-    protected $description = '週の利用絵文字数ユーザー数を計測';
+    protected $signature = 'MonthlyEmojiUserCount';
+    protected $description = '月間の利用絵文字数ユーザー数を計測';
 
     public function __construct()
     {
@@ -27,7 +27,7 @@ class WeeklyEmojiUserCount extends Command
     public function handle()
     {
 
-        $start = Carbon::now()->subDay(7)->startofday();
+        $start = Carbon::now()->subMonth()->startofday();
         $end = Carbon::now()->startOfDay();
 
         $emoji = EmojiReactionHistory::select(DB::raw('count(id) as cnt, source_user_id'))
@@ -40,24 +40,22 @@ class WeeklyEmojiUserCount extends Command
         $no = 1;
         $cnt = 1;
         $preCnt = 0;
-        $text = " *先週のスタンパーランキング* \n";
+        $text = " *先月のスタンパーランキング* \n";
         $text .= " ({$start->format('Y/m/d H:i')}〜{$end->format('Y/m/d H:i')}) \n";
-        foreach ($emoji as $e)
-        {
-            if($cnt > 20){
+        foreach ($emoji as $e) {
+            if ($cnt > 30) {
                 break;
             }
 
             // 同率では無い場合で前回値がマイナスで無い場合はNoはカウント数と同じ
-            if($preCnt != $e['cnt'] )
-            {
+            if ($preCnt != $e['cnt']) {
                 $no = $cnt;
             }
 
-            if($no == 1){
-                $text .= "第{$no}位 {$e['cnt']}回 :tada: <@{$e['source_user_id']}> :tada: \n";
+            if ($no == 1) {
+                $text .= " *{$start->format('Y年m月度')}MVS* {$e['cnt']}回 :crown: :crown: :crown:  <@{$e['source_user_id']}> :crown: :crown: :crown: \n";
 
-            }else {
+            } else {
                 $text .= "第{$no}位 {$e['cnt']}回　<@{$e['source_user_id']}> \n";
             }
             $preCnt = $e['cnt'];

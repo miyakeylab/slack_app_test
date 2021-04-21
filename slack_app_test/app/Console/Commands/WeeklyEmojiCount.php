@@ -49,7 +49,7 @@ class WeeklyEmojiCount extends Command
         $text .= " 総スタンプ数{$emojiCount}回 \n";
         foreach ($emoji as $e)
         {
-            if($cnt > 20){
+            if($cnt > 30){
                 break;
             }
 

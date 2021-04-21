@@ -17,6 +17,9 @@ class Kernel extends ConsoleKernel
         Commands\DailyEmojiUserCount::class,
         Commands\WeeklyEmojiCount::class,
         Commands\WeeklyEmojiUserCount::class,
+        Commands\MonthlyEmojiRankingBefore::class,
+        Commands\MonthlyEmojiCount::class,
+        Commands\MonthlyEmojiUserCount::class,
         //
     ];
 
@@ -31,8 +34,11 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('DailyEmojiCount')->dailyAt('09:00');
         $schedule->command('DailyEmojiUserCount')->dailyAt('09:00');
-        $schedule->command('WeeklyEmojiCount')->weeklyOn(1, '8:00');
-        $schedule->command('WeeklyEmojiUserCount')->weeklyOn(1, '8:00');
+        $schedule->command('WeeklyEmojiCount')->weeklyOn(1, '9:05');
+        $schedule->command('WeeklyEmojiUserCount')->weeklyOn(1, '9:05');
+        $schedule->command('MonthlyEmojiRankingBefore')->monthlyOn(1, '9:09');
+        $schedule->command('MonthlyEmojiCount')->monthlyOn(1, '9:10');
+        $schedule->command('MonthlyEmojiUserCount')->monthlyOn(1, '9:10');
     }
 
     /**
