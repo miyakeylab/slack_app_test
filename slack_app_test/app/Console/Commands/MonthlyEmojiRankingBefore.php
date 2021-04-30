@@ -27,8 +27,8 @@ class MonthlyEmojiRankingBefore extends Command
     public function handle()
     {
 
-        $text = "<!channel> \n" ." *もうまもなく！MVSが発表されます！！！！！* \n";
-        $text .= " *月間スタンパーランキング、月間スタンプランキングがもうまもなく！！！* \n";
+        $text = "<!channel> \n" ." *もうまもなく！！！！！！* \n";
+        $text .= " *月間スタンパーランキング、月間スタンプランキングの発表がもうまもなく！！！* \n";
         $text .= " \n \n \n \n \n \n 震えて待て！ \n";
 
         $sendSlack = new SlackSendEmojiChange();

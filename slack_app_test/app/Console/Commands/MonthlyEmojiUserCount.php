@@ -53,7 +53,7 @@ class MonthlyEmojiUserCount extends Command
             }
 
             if ($no == 1) {
-                $text .= " *{$start->format('Y年m月度')}MVS* {$e['cnt']}回 :crown: :crown: :crown:  <@{$e['source_user_id']}> :crown: :crown: :crown: \n";
+                $text .= " *{$start->format('Y年m月度')}ベストスタンパーは... * \n\n  * {$e['cnt']}回 * :crown: :crown: :crown:  <@{$e['source_user_id']}> :crown: :crown: :crown: \n";
 
             } else {
                 $text .= "第{$no}位 {$e['cnt']}回　<@{$e['source_user_id']}> \n";
